@@ -4,8 +4,6 @@ import * as fs from 'fs';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
-  private messaging: any;
-
   onModuleInit() {
     const serviceAccountPath = process.env.FIREBASE_CREDENTIAL_PATH;
 
@@ -22,15 +20,29 @@ export class FirebaseService implements OnModuleInit {
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
     });
-
-    this.messaging = admin.messaging();
   }
 
-  sendToOne(token: string, payload: admin.messaging.MessagingPayload) {
-    return this.messaging.sendToDevice(token, payload);
+  sendToOne(token: string, title: string, body: string) {
+    const message: admin.messaging.Message = {
+      token,
+      notification: {
+        title,
+        body,
+      },
+    };
+
+    return admin.messaging().send(message);
   }
 
-  sendToMany(tokens: string[], payload: admin.messaging.MessagingPayload) {
-    return this.messaging.sendToDevice(tokens, payload);
+  sendToMany(tokens: string[], title: string, body: string) {
+    const message: admin.messaging.MulticastMessage = {
+      tokens,
+      notification: {
+        title,
+        body,
+      },
+    };
+
+    return admin.messaging().sendEachForMulticast(message);
   }
 }

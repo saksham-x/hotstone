@@ -41,7 +41,6 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.localfirebase-service-account.json
-firebase-service-account.json
 dating-app-96ef2-firebase-adminsdk-fbsvc-14e6448ba4.json
 # temp directory
 .temp

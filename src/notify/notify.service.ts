@@ -11,15 +11,11 @@ export class NotifyService {
   ) {}
 
   async sendToOne(token: string, title: string, body: string) {
-    const payload = { notification: { title, body } };
-    return this.firebaseService.sendToOne(token, payload);
+    return this.firebaseService.sendToOne(token, title, body);
   }
-  async sendToMany(tokens: string[], title: string, body: string) {
-    const payload = {
-      notification: { title, body },
-    };
 
-    return this.firebaseService.sendToMany(tokens, payload);
+  async sendToMany(tokens: string[], title: string, body: string) {
+    return this.firebaseService.sendToMany(tokens, title, body);
   }
 
   async scheduleNotification(dto: NotifyScheduleDto) {
@@ -29,13 +25,10 @@ export class NotifyService {
     }
 
     const timeout = date.getTime() - Date.now();
-
     const timeoutId = `notification_${Date.now()}`;
 
     const timeoutRef = setTimeout(async () => {
-      await this.firebaseService.sendToMany(dto.tokens, {
-        notification: { title: dto.title, body: dto.body },
-      });
+      await this.firebaseService.sendToMany(dto.tokens, dto.title, dto.body);
       this.schedulerRegistry.deleteTimeout(timeoutId);
     }, timeout);
 
